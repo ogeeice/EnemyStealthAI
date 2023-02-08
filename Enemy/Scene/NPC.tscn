@@ -1,0 +1,139 @@
+[gd_scene load_steps=13 format=2]
+
+[ext_resource path="res://Enemy/Script/NPC.gd" type="Script" id=1]
+[ext_resource path="res://Mesh/Ak.obj" type="ArrayMesh" id=2]
+[ext_resource path="res://Mesh/Base.glb" type="PackedScene" id=4]
+
+[sub_resource type="CapsuleShape" id=4]
+radius = 0.5
+height = 1.6
+
+[sub_resource type="ConvexPolygonShape" id=7]
+points = PoolVector3Array( 0, -1, 1, 0.866025, -1, 0.5, 0, 1, 0, -0.866025, -1, 0.5, 0.866025, -1, -0.5, 0, -1, -1, -0.866025, -1, -0.5 )
+
+[sub_resource type="SphereMesh" id=10]
+
+[sub_resource type="SpatialMaterial" id=11]
+flags_unshaded = true
+albedo_color = Color( 0, 0.807843, 0.847059, 1 )
+
+[sub_resource type="SpatialMaterial" id=12]
+flags_unshaded = true
+params_cull_mode = 1
+params_grow = true
+params_grow_amount = 0.05
+albedo_color = Color( 1, 0, 0, 1 )
+
+[sub_resource type="SpatialMaterial" id=13]
+next_pass = SubResource( 12 )
+flags_unshaded = true
+
+[sub_resource type="SpatialMaterial" id=14]
+flags_unshaded = true
+albedo_color = Color( 1, 0, 0, 1 )
+
+[sub_resource type="SpatialMaterial" id=15]
+flags_unshaded = true
+params_cull_mode = 1
+params_grow = true
+params_grow_amount = 0.02
+
+[sub_resource type="SpatialMaterial" id=16]
+next_pass = SubResource( 15 )
+flags_unshaded = true
+albedo_color = Color( 1, 0, 0, 1 )
+
+[node name="NPC" type="KinematicBody"]
+script = ExtResource( 1 )
+PatrolSpeed = 50.0
+FollowSpeed = 200.0
+
+[node name="Agent" type="NavigationAgent" parent="."]
+
+[node name="TimerHolder" type="Node" parent="."]
+
+[node name="ResetSTATE" type="Timer" parent="TimerHolder"]
+wait_time = 8.0
+autostart = true
+
+[node name="AI_Vision_Scan" type="Timer" parent="TimerHolder"]
+wait_time = 0.25
+autostart = true
+
+[node name="AlarmedTimer" type="Timer" parent="TimerHolder"]
+wait_time = 0.1
+one_shot = true
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+shape = SubResource( 4 )
+
+[node name="AI_Fov" type="Area" parent="."]
+transform = Transform( 1, 5.96046e-08, 5.96046e-08, 1.49012e-08, 1, 1.19209e-07, -2.98023e-08, -4.47035e-08, 1, 1.49012e-08, 0, 1.86265e-08 )
+
+[node name="CollisionShape" type="CollisionShape" parent="AI_Fov"]
+transform = Transform( 2, 0, 0, 0, -2.18557e-07, -2, 0, 5, -8.74228e-08, 0, 0.88081, -5.19343 )
+shape = SubResource( 7 )
+
+[node name="AI_Vision" type="RayCast" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.15344, -0.175553 )
+enabled = true
+cast_to = Vector3( 0, 0, -10 )
+debug_shape_custom_color = Color( 1, 0, 0, 1 )
+
+[node name="LastSpottedLoc" type="Position3D" parent="."]
+
+[node name="MeshInstance" type="MeshInstance" parent="LastSpottedLoc"]
+transform = Transform( 0.2, 0, 0, 0, 0.2, 0, 0, 0, 0.2, 0, 0, 0 )
+mesh = SubResource( 10 )
+skeleton = NodePath("../..")
+material/0 = SubResource( 11 )
+
+[node name="Base" parent="." instance=ExtResource( 4 )]
+transform = Transform( -0.16, 0, -2.41593e-08, 0, 0.16, 0, 2.41593e-08, 0, -0.16, 0, -1.18323, 0 )
+
+[node name="BoneAttachment" parent="Base/Structure/Skeleton" index="0"]
+transform = Transform( 0.981621, -0.0516336, -0.183721, 0.0511495, 0.998664, -0.00737593, 0.183857, -0.00215685, 0.982951, -0.122075, 14.1998, -0.379816 )
+
+[node name="BoneAttachment2" parent="Base/Structure/Skeleton" index="1"]
+transform = Transform( 0.863991, 0.442544, 0.240152, 0.480844, -0.866687, -0.132824, 0.149357, 0.230234, -0.961605, 4.3546, 7.34553, 1.51852 )
+
+[node name="BoneAttachment3" parent="Base/Structure/Skeleton" index="2"]
+transform = Transform( 0.0194476, -0.312397, 0.949752, 0.392107, -0.871448, -0.29467, 0.919714, 0.378135, 0.105545, -4.27146, 6.86484, -0.0952362 )
+
+[node name="BoneAttachment4" parent="Base/Structure/Skeleton" index="3"]
+transform = Transform( -0.834382, -0.507431, -0.215222, -0.230174, -0.0340191, 0.972555, -0.500826, 0.86102, -0.0884125, 1.11347, -0.260303, 0.61471 )
+
+[node name="BoneAttachment5" parent="Base/Structure/Skeleton" index="4"]
+transform = Transform( -0.977198, 0.167893, 0.129984, 0.132031, 0.00103748, 0.991245, 0.166288, 0.985804, -0.0231808, -0.170919, -0.327278, 0.354141 )
+
+[node name="StructureForm" parent="Base/Structure/Skeleton" index="5"]
+material/0 = SubResource( 13 )
+
+[node name="StructureJoints" parent="Base/Structure/Skeleton" index="6"]
+material/0 = SubResource( 14 )
+
+[node name="HeadPos" type="BoneAttachment" parent="Base/Structure/Skeleton" index="7"]
+transform = Transform( 0.981621, -0.0516336, -0.183721, 0.0511495, 0.998664, -0.00737593, 0.183857, -0.00215685, 0.982951, -0.122075, 14.1998, -0.379816 )
+bone_name = "mixamorigHead.001"
+
+[node name="RightHand" type="BoneAttachment" parent="Base/Structure/Skeleton" index="8"]
+transform = Transform( 0.0503839, -0.424843, 0.903863, 0.451135, -0.79774, -0.40011, 0.891032, 0.427923, 0.151468, -3.82706, 8.11245, -0.480184 )
+bone_name = "mixamorigRightHand"
+
+[node name="Position3D" type="Position3D" parent="Base/Structure/Skeleton/RightHand"]
+transform = Transform( -0.130176, 0.987249, 0.0916481, 0.989325, 0.123228, 0.0777951, 0.0655094, 0.100797, -0.992748, 0.39354, 1.44662, 0.36811 )
+
+[node name="Ak" type="MeshInstance" parent="Base/Structure/Skeleton/RightHand/Position3D"]
+transform = Transform( 1.5, 7.45058e-08, 5.96046e-08, -4.47035e-08, 1.5, 5.96046e-08, 5.96046e-08, 0, 1.5, 0, 0, 0 )
+mesh = ExtResource( 2 )
+skeleton = NodePath("../..")
+material/0 = SubResource( 16 )
+
+[connection signal="navigation_finished" from="Agent" to="." method="_on_Agent_navigation_finished"]
+[connection signal="timeout" from="TimerHolder/ResetSTATE" to="." method="_on_ResetSTATE_timeout"]
+[connection signal="timeout" from="TimerHolder/AI_Vision_Scan" to="." method="_on_AI_Vision_Scan_timeout"]
+[connection signal="timeout" from="TimerHolder/AlarmedTimer" to="." method="_on_AlarmedTimer_timeout"]
+[connection signal="animation_finished" from="Base/AnimationPlayer" to="." method="_on_AnimationPlayer_animation_finished"]
+
+[editable path="Base"]
